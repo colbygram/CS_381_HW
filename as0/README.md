@@ -11,22 +11,13 @@ sudo apt-get install g++
 ```
 Reminder that these commands must be run in the WSL shell and so should the following commands. The WSL shell can be accessed by using the ```wsl``` command in and Windows terminal
 
-# Install
-Clone the repo using ```git clone <repo-link>```, if not already cloned.
-```
- git clone https://github.com/colbygram/CS_381_Assignments.git
-```
-
-Navigate to new CS_381_Assignments folder
-```
-cd CS_381_Assignments
-```
-
+# Init Submodules
 Initialize the submodules needed
 ```
  git submodule init as0
  git submodule update --init --recursive as0
 ```
+
 # Prior To Build
 When trying to compile with cmake, both my pc and laptop required these two commands to be installed on WSL for it actually compile. If you already know you have these two libraries present, no need to install them.
 ```
