@@ -41,3 +41,7 @@ make
 
 # Run Executable and Operation
 Use ```./as0``` to run the executable previously built. Simply click and drag to resize the window.
+
+# Bug
+I had this bug on my PC. I don't know if it will show up one any other device, because I went through my processes on my laptop and it looked fine.
+![Screenshot 2024-02-05 195050](https://github.com/colbygram/CS_381_HW/assets/123613082/bad4e1c2-4d91-408b-bef9-3db2c14e9ecb)
