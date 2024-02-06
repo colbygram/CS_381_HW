@@ -14,8 +14,8 @@ Reminder that these commands must be run in the WSL shell and so should the foll
 # Init Submodules
 Initialize the submodules needed
 ```
- git submodule init as0
- git submodule update --init --recursive as0
+ git submodule init
+ git submodule update --init --recursive
 ```
 
 # Prior To Build
