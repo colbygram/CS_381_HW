@@ -11,22 +11,13 @@ sudo apt-get install g++
 ```
 Reminder that these commands must be run in the WSL shell and so should the following commands. The WSL shell can be accessed by using the ```wsl``` command in and Windows terminal
 
-# Install
-Clone the repo using ```git clone <repo-link>```, if not already cloned.
-```
- git clone https://github.com/colbygram/CS_381_Assignments.git
-```
-
-Navigate to new CS_381_Assignments folder
-```
-cd CS_381_Assignments
-```
-
+# Init Submodules
 Initialize the submodules needed
 ```
- git submodule init as0
- git submodule update --init --recursive as0
+ git submodule init
+ git submodule update --init --recursive
 ```
+
 # Prior To Build
 When trying to compile with cmake, both my pc and laptop required these two commands to be installed on WSL for it actually compile. If you already know you have these two libraries present, no need to install them.
 ```
@@ -50,3 +41,7 @@ make
 
 # Run Executable and Operation
 Use ```./as0``` to run the executable previously built. Simply click and drag to resize the window.
+
+# Bug
+I had this bug on my PC. I don't know if it will show up one any other device, because I went through my processes on my laptop and it looked fine.
+![Screenshot 2024-02-05 195050](https://github.com/colbygram/CS_381_HW/assets/123613082/bad4e1c2-4d91-408b-bef9-3db2c14e9ecb)
