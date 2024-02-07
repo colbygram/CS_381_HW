@@ -12,12 +12,12 @@ int main(void)
   //Constants
   const int WIDTH = 960;
   const int HEIGHT = 540; 
-  const char* CENTER_TEXT = "THIS IS THE CENTER TEXT";
-  const int FONT_SIZE = 20;
+  const std::string texture_file_path = "../assets/textures/";
+  const std::string mesh_file_path = "../assets/meshes/";
 
   //Raylib Objects
   raylib::Window window(WIDTH, HEIGHT, "CS 381 - Assignment 1");
-  window.SetState(FLAG_WINDOW_RESIZABLE);
+  raylib::Camera main_camera(raylib::Vector3(-3,3,3), raylib::Vector3(0,0,0), raylib::Vector3::Up(), 90, CAMERA_PERSPECTIVE);
 
   while (!window.ShouldClose())
   {
@@ -26,7 +26,15 @@ int main(void)
 
     //Begin Rendering
     window.BeginDrawing();
-    window.ClearBackground(BLACK);
+    {
+        main_camera.BeginMode();
+        {
+            DrawLine3D(raylib::Vector3(0,0,0),raylib::Vector3(3,0,0), RED);//X-axis
+            DrawLine3D(raylib::Vector3(0,0,0),raylib::Vector3(0,3,0), YELLOW); //Y-axis
+            DrawLine3D(raylib::Vector3(0,0,0),raylib::Vector3(0,0,3), BLUE); // Z-axis
+        }
+        main_camera.EndMode();
+    }
     window.EndDrawing();
   }
 
