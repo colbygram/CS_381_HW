@@ -30,6 +30,7 @@ int main(void)
   //Raylib Objects
   raylib::Window window(WIDTH, HEIGHT, "CS 381 - Assignment 1");
   raylib::Camera main_camera(raylib::Vector3(-50,50,50), raylib::Vector3(0,0,0), raylib::Vector3::Up(), 90, CAMERA_PERSPECTIVE);
+  //Note: raylib objects feature destructors so don't need to call CloseWindow() and Unload...() whenever objects are used
   raylib::Model model;
   raylib::BoundingBox box;
 
@@ -56,9 +57,6 @@ int main(void)
     }
     window.EndDrawing();
   }
-
-  UnloadModel(model);
-  CloseWindow();
 
   return 0;
 }
