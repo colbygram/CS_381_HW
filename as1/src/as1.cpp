@@ -23,7 +23,6 @@ int main(void)
   const int HEIGHT = 540; 
   const std::string texture_file_path = "../assets/textures/";
   const std::string mesh_file_path = "../assets/meshes/";
-
   //File map
   std::unordered_map<MESH_FILES, std::string> file_map;
   file_map[PLANE] = "PolyPlane.glb";
@@ -31,14 +30,12 @@ int main(void)
   file_map[TANKER] = "OilTanker.glb";
   file_map[SKULL] = "12140_Skull_v3_L2.obj";
   file_map[SKULL_TEX] = "Skull.jpg";
-
   //Raylib Objects
   raylib::Window window(WIDTH, HEIGHT, "CS 381 - Assignment 1");
   raylib::Camera main_camera(raylib::Vector3(0,100,250), raylib::Vector3(0,75,-10), raylib::Vector3::Up(), 90, CAMERA_PERSPECTIVE);
   //Note: raylib objects feature destructors so don't need to call CloseWindow() and Unload...() whenever objects are used
   raylib::Model model01, model02, model03, model04, model05, model06;
   raylib::Texture2D model06_tex;
-
   //Loading files, transforms and misc
   //Plane 1
   model01.Load(mesh_file_path + file_map[PLANE]);
@@ -65,7 +62,6 @@ int main(void)
   model06.SetTransform(raylib::Transform(model06.transform).Translate(raylib::Vector3(0, 100,50)));
   model06.SetTransform(raylib::Transform(model06.transform).Scale(2,2,2));
   model06.SetTransform(raylib::Transform(model06.transform).RotateX(raylib::Radian(-(PI)/3)));
-
   //Animated Variables
   float radianX = 0;
   float spinSpeed = 0.75;
@@ -83,12 +79,10 @@ int main(void)
       std::cout << index << std::endl;
     }
     UpdateCamera(&main_camera, camera_modes[index]);
-
     //Toggle Bounding Boxes
     if(IsKeyPressed(KEY_SPACE)){
       drawBounds = !drawBounds;
     }
-
     //Animated Objects
     //Plane 2 spin on X-axis
     if(radianX != (2*PI)){
@@ -97,7 +91,6 @@ int main(void)
       radianX = 0;
     }
     model02.SetTransform(raylib::Transform(model02.transform).RotateX(raylib::Radian(radianX)));
-
     //Drawing
     window.BeginDrawing();
       ClearBackground(DARKGRAY);
