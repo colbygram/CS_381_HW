@@ -1,6 +1,8 @@
 # Assignment 1: 
 Render models and textures into window
 
+https://github.com/colbygram/CS_381_HW/assets/123613082/d1fb9ea2-7e4d-4066-9533-3b8f45c559a8
+
 # Pre-Install
 Due to errors with MSVC, it is recommended to install WSL (https://learn.microsoft.com/en-us/windows/wsl/install). Using Ubuntu, WSL's default distribution, the following commands will install the G++ compiler which will allow for the code to be compiled.
 ```
