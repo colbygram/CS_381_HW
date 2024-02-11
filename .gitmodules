@@ -4,3 +4,6 @@
 [submodule "as1/raylib-cpp"]
 	path = as1/raylib-cpp
 	url = https://github.com/joshuadahlunr/raylib-cpp.git
+[submodule "as2/raylib-cpp"]
+	path = as2/raylib-cpp
+	url = https://github.com/joshuadahlunr/raylib-cpp.git
