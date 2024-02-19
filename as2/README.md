@@ -1,6 +1,9 @@
 # Assignment 2: 
 Plane on runway
 
+# Assignment Question:
+I am confused by what the question is specifically asking? It references the camera but it isn't the specific goal to move the camera. If it means specifically moving the plane across different world axes, then yes, it would simplify the movement of the plane in a 2D sense, but for the plane to become 3D and actively move in 3D, it would be more effective to calculate the plane's position according to its own local axes opposed to the world axes. If the goal is to allow the camera to follow the plane/player, then it would be simpler to allow the camera to move on the same axes as the plane so that the plane is always in view.
+
 # Pre-Install
 Due to errors with MSVC, it is recommended to install WSL (https://learn.microsoft.com/en-us/windows/wsl/install). Using Ubuntu, WSL's default distribution, the following commands will install the G++ compiler which will allow for the code to be compiled.
 ```

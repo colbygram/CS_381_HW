@@ -16,6 +16,16 @@ enum MESH_FILES{
   SKULL_TEX
 };
 
+void DrawBoundedModel(raylib::Model& model , raylib::Transform transform, const bool drawBound){
+  raylib::Transform backupT = model.transform;
+  model.transform = transform;
+  model.Draw({});
+  if(drawBound){
+    model.GetTransformedBoundingBox().Draw();
+  }
+  model.transform = backupT;
+}
+
 int main(void)
 {
   //Constants
@@ -35,41 +45,28 @@ int main(void)
   raylib::Camera main_camera(raylib::Vector3(0,100,250), raylib::Vector3(0,75,-10), raylib::Vector3::Up(), 90, CAMERA_PERSPECTIVE);
   //Note: raylib objects feature destructors so don't need to call CloseWindow() and Unload...() whenever objects are used
   raylib::Model model01, model02, model03, model04, model05, model06;
-  raylib::Texture2D model06_tex;
+  raylib::Texture2D model03_tex;
+
   //Loading files, transforms and misc
   //Plane 1
   model01.Load(mesh_file_path + file_map[PLANE]);
   //Plane 2
-  model02.Load(mesh_file_path + file_map[PLANE]);
-  model02.SetTransform(raylib::Transform(model02.transform).Scale(1,-1,1));
-  model02.SetTransform(raylib::Transform(model02.transform).Translate(raylib::Vector3(-100,100,0)));
-  //Boat 1
-  model03.Load(mesh_file_path + file_map[BOAT]);
-  model03.SetTransform(raylib::Transform(model03.transform).Translate(raylib::Vector3(-200, 0,0)));
-  //Boat 2
-  model04.Load(mesh_file_path + file_map[BOAT]);
-  model04.SetTransform(raylib::Transform(model04.transform).Translate(raylib::Vector3(200, 0,0)));
-  model04.SetTransform(raylib::Transform(model04.transform).RotateY(raylib::Radian(PI/2)));
-  //Boat 3
-  model05.Load(mesh_file_path + file_map[BOAT]);
-  model05.SetTransform(raylib::Transform(model05.transform).Translate(raylib::Vector3(100, 100,0)));
-  model05.SetTransform(raylib::Transform(model05.transform).Scale(1,2,1));
-  model05.SetTransform(raylib::Transform(model05.transform).RotateY(raylib::Radian((3*PI)/2)));
+  model02.Load(mesh_file_path + file_map[BOAT]);
   //Custom Model
-  model06.Load(mesh_file_path + file_map[SKULL]);
-  model06_tex.Load(texture_file_path + file_map[SKULL_TEX]);
-  model06.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = model06_tex;
-  model06.SetTransform(raylib::Transform(model06.transform).Translate(raylib::Vector3(0, 100,50)));
-  model06.SetTransform(raylib::Transform(model06.transform).Scale(2,2,2));
-  model06.SetTransform(raylib::Transform(model06.transform).RotateX(raylib::Radian(-(PI)/3)));
+  model03.Load(mesh_file_path + file_map[SKULL]);
+  model03_tex.Load(texture_file_path + file_map[SKULL_TEX]);
+  model03.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = model03_tex;
+  
   //Animated Variables
   float radianX = 0;
-  float spinSpeed = 0.75;
+  float spinSpeed = 10;
+  
   //Misc Variables
   bool drawBounds = false;
   const int MAX_MODES = 2;
   CameraMode camera_modes[MAX_MODES] = {CAMERA_ORBITAL, CAMERA_FIRST_PERSON};
   int index = 0;
+  
   //Game Loop
   while (!window.ShouldClose())
   {
@@ -79,10 +76,12 @@ int main(void)
       std::cout << index << std::endl;
     }
     UpdateCamera(&main_camera, camera_modes[index]);
+
     //Toggle Bounding Boxes
     if(IsKeyPressed(KEY_SPACE)){
       drawBounds = !drawBounds;
     }
+
     //Animated Objects
     //Plane 2 spin on X-axis
     if(radianX != (2*PI)){
@@ -90,7 +89,7 @@ int main(void)
     }else{
       radianX = 0;
     }
-    model02.SetTransform(raylib::Transform(model02.transform).RotateX(raylib::Radian(radianX)));
+
     //Drawing
     window.BeginDrawing();
       ClearBackground(DARKGRAY);
@@ -99,20 +98,12 @@ int main(void)
       DrawText("Use [LEFT_ALT] to toggle camera modes", 10, 60, 20, GREEN);
       main_camera.BeginMode();
           DrawGrid(50, 25);
-          model01.Draw(raylib::Vector3(0,0,0), 1, WHITE);
-          model02.Draw(raylib::Vector3(0, 0, 0), 1, WHITE);
-          model03.Draw(raylib::Vector3(0,0,0), 1, WHITE);
-          model04.Draw(raylib::Vector3(0,0,0), 1, WHITE);
-          model05.Draw(raylib::Vector3(0,0,0), 1, WHITE);
-          model06.Draw(raylib::Vector3(0,0,0), 1, WHITE);
-          if(drawBounds){
-            DrawBoundingBox(model01.GetTransformedBoundingBox(), WHITE);
-            DrawBoundingBox(model02.GetTransformedBoundingBox(), WHITE);
-            DrawBoundingBox(model03.GetTransformedBoundingBox(), WHITE);
-            DrawBoundingBox(model04.GetTransformedBoundingBox(), WHITE);
-            DrawBoundingBox(model05.GetTransformedBoundingBox(), WHITE);
-            DrawBoundingBox(model06.GetTransformedBoundingBox(), WHITE);
-          }
+          DrawBoundedModel(model01, model01.transform, drawBounds);
+          DrawBoundedModel(model01, raylib::Transform(model01.transform).Translate(raylib::Vector3(-100,100,0)).Scale(1,-1,1).RotateX(radianX), drawBounds);
+          DrawBoundedModel(model02, raylib::Transform(model02.transform).Translate(raylib::Vector3(-200, 0,0)), drawBounds);
+          DrawBoundedModel(model02, raylib::Transform(model02.transform).Translate(raylib::Vector3(200, 0,0)).RotateY(raylib::Radian(PI/2)).RotateY(raylib::Radian((3*PI)/2)), drawBounds);
+          DrawBoundedModel(model02, raylib::Transform(model02.transform).Translate(raylib::Vector3(100, 100,0)).Scale(1,2,1), drawBounds);
+          DrawBoundedModel(model03, raylib::Transform(model03.transform).Translate(raylib::Vector3(0, 100,50)).Scale(2,2,2).RotateX(raylib::Radian(-(PI)/3)), drawBounds);
       main_camera.EndMode();
     window.EndDrawing();
   }
