@@ -1,5 +1,7 @@
 //Author: Colby Gramelspacher
-//Reference: raylib cheatsheet (https://www.raylib.com/cheatsheet/cheatsheet.html)
+//Reference: raylib cheatsheet (https://www.raylib.com/cheatsheet/cheatsheet.html), 
+//           magnitude to vector (https://socratic.org/questions/how-do-you-find-the-vector-v-with-the-given-magnitude-of-9-and-in-the-same-direc), 
+//           forward vector (https://gamedev.stackexchange.com/questions/190054/how-to-calculate-the-forward-up-right-vectors-using-the-rotation-angles)
 //Problem: Render a plane model, skybox, and ground. Add controls to the plane to simulate plane behavior
 //Solution: Use designated inputs, vector math and physics to allow the plane to move in a semi realistic behavior
 //Extra Credit: I built the plane to more accurately move according to how a plane would move, but still left comments, explaining that I understand how to
