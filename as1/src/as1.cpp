@@ -55,6 +55,8 @@ int main(void)
   //Custom Model
   model03.Load(mesh_file_path + file_map[SKULL]);
   model03_tex.Load(texture_file_path + file_map[SKULL_TEX]);
+  model03_tex.SetFilter(TEXTURE_FILTER_ANISOTROPIC_16X);
+  model03_tex.SetWrap(TEXTURE_WRAP_REPEAT);
   model03.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = model03_tex;
   
   //Animated Variables
