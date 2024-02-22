@@ -60,6 +60,7 @@
   "cmake.configureOnOpen": false,
   "files.associations": {
     "ostream": "cpp",
-    "cmath": "cpp"
+    "cmath": "cpp",
+    "*.vs": "cpp"
   }
 }

@@ -3,7 +3,6 @@
 
 #include <string>
 #include <sstream>
-#include <unordered_map>
-#include "../raylib-cpp/include/raylib-cpp.hpp"
+#include "skybox.h"
 
 #endif
