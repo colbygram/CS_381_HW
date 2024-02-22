@@ -11,7 +11,7 @@
 *
 ********************************************************************************************/
 
-#include "../raylib-cpp/include/raylib-cpp.hpp"
+#include "raylib-cpp.hpp"
 
 namespace cs381 {
 	struct SkyBox {
