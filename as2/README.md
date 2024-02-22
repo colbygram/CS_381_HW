@@ -39,4 +39,4 @@ make
 ```
 
 # Run Executable and Operation
-Use ```./as2``` to run the executable previously built.
+Use ```./as2``` to run the executable previously built. WASD for plane movement, ARROW KEYS for camera movement, Q and E for ascending and descending

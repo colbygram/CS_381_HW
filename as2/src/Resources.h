@@ -3,6 +3,6 @@
 
 #include <string>
 #include <sstream>
-#include "skybox.h"
+#include "skybox.hpp"
 
 #endif

@@ -11,10 +11,10 @@
 *
 ********************************************************************************************/
 
-#include "skybox.h"
+#include "skybox.hpp"
 #include <iostream>
 
-#include "../raylib-cpp/raylib/src/rlgl.h"
+#include "rlgl.h"
 
 namespace cs381 {
 
