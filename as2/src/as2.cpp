@@ -60,7 +60,7 @@ int main(){
     float plane_turn_rate = 1;
     float camera_speed = 100;
     float lerp_speed = 5;
-    float max_vel = 1;
+    float max_speed = 5;
     float jump_vel = 3;
     bool turn_left = false, turn_right = false;
 
@@ -97,18 +97,19 @@ int main(){
         if(IsKeyPressed(KEY_E)){
             plane_vertical_speed -= (plane_acceleration * GetFrameTime());
         }
+        
+        if(plane_speed>max_speed){
+            plane_speed = max_speed;
+        }else if(plane_speed<-max_speed){
+            plane_speed = -max_speed;
+        }
 
         //Get rotation updates and calculate forward
         plane_current_angles_radian += plane_rotation;
         plane_current_angles_degrees = plane_current_angles_radian*(180/PI);
         CalculateForwardVector(plane_forward, plane_current_angles_radian);
 
-        //Checks if the magnitude of plane_velocity.x and plane_velocity.z have exceeded set max_vel
-        if(ExcedeMaxForwardVel(plane_velocity, max_vel)){
-            plane_velocity = (plane_forward.Normalize() * max_vel) + (raylib::Vector3(0,1,0) * plane_vertical_speed);
-        }else{
-            plane_velocity = (plane_forward.Normalize() * plane_speed) + (raylib::Vector3(0,1,0) * plane_vertical_speed);
-        }
+        plane_velocity = (plane_forward.Normalize() * plane_speed) + (raylib::Vector3(0,1,0) * plane_vertical_speed);
 
         //Ground collision
         if((plane_position.y + plane_velocity.y) < 0){
@@ -158,7 +159,7 @@ int main(){
 //Determine if the given vector's magnitude excedes the given max magnitude (specifically designed for the x and z axis)
 bool inline ExcedeMaxForwardVel(raylib::Vector3 vel, const float max){
     float mag = sqrtf(powf(vel.x, 2) + powf(vel.z, 2));
-    if(mag>max){
+    if(mag>=max){
         return true;
     }else{
         return false;
