@@ -34,6 +34,10 @@ void Plane::HandleInput(){
     if(IsKeyPressed(KEY_E)){
         vertical_speed -= (acceleration * GetFrameTime());
     }
+    if(IsKeyPressed(KEY_SPACE)){
+        speed = 0;
+        vertical_speed = 0;
+    }
 }
 void Plane::Update(){
     model->transform = transform;
