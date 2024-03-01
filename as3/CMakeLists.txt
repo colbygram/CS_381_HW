@@ -1,0 +1,17 @@
+cmake_minimum_required(VERSION 3.18)
+project(DuckLib LANGUAGES CXX)
+add_subdirectory(raylib-cpp)
+file(GLOB sources "src/*.cpp" "src/*.c")
+add_executable(as3 ${sources})
+target_link_libraries(as3 PUBLIC raylib raylib_cpp)
+set_property(TARGET as3 PROPERTY CXX_STANDARD 20)
+
+configure_file(assets/textures/skybox.png assets/textures/skybox.png COPYONLY)
+configure_file(assets/textures/grass.jpg assets/textures/grass.jpg COPYONLY)
+configure_file(assets/meshes/PolyPlane.glb assets/meshes/PolyPlane.glb COPYONLY)
+
+include(includeable.cmake)
+make_includeable(raylib-cpp/raylib/examples/models/resources/shaders/glsl330/skybox.vs generated/skybox.vs)
+make_includeable(raylib-cpp/raylib/examples/models/resources/shaders/glsl330/skybox.vs generated/skybox.fs)
+make_includeable(raylib-cpp/raylib/examples/models/resources/shaders/glsl330/skybox.vs generated/cubemap.vs)
+make_includeable(raylib-cpp/raylib/examples/models/resources/shaders/glsl330/skybox.vs generated/cubemap.fs)
