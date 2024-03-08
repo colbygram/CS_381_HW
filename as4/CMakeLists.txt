@@ -1,0 +1,11 @@
+cmake_minimum_required(VERSION 3.18)
+project(DuckLib LANGUAGES CXX)
+add_subdirectory(raylib-cpp)
+file(GLOB sources "src/*.cpp" "src/*.c")
+add_executable(as4 ${sources})
+target_link_libraries(as4 PUBLIC raylib raylib_cpp)
+set_property(TARGET as4 PROPERTY CXX_STANDARD 20)
+
+configure_file(assets/textures/skybox.png assets/textures/skybox.png COPYONLY)
+configure_file(assets/textures/grass.jpg assets/textures/grass.jpg COPYONLY)
+configure_file(assets/meshes/PolyPlane.glb assets/meshes/PolyPlane.glb COPYONLY)
