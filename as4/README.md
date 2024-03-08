@@ -1,8 +1,5 @@
 # Assignment 4: 
-Multiple planes
-
-# Features Not Present
-Couldn't get the skybox functioning in time. Tried to reach out but never got a response so wasn't able to figure out the issue.
+Flappy Planes
 
 # Pre-Install
 Due to errors with MSVC, it is recommended to install WSL (https://learn.microsoft.com/en-us/windows/wsl/install). Using Ubuntu, WSL's default distribution, the following commands will install the G++ compiler which will allow for the code to be compiled.
