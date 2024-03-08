@@ -1,7 +1,5 @@
 //Author: Colby Gramelspacher
 //Reference: raylib cheatsheet (https://www.raylib.com/cheatsheet/cheatsheet.html), 
-//           vector magnitude (https://socratic.org/questions/how-do-you-find-the-vector-v-with-the-given-magnitude-of-9-and-in-the-same-direc), 
-//           forward vector calculation (https://gamedev.stackexchange.com/questions/190054/how-to-calculate-the-forward-up-right-vectors-using-the-rotation-angles)
 //Problem: Make an ad hoc game
 //Solution:  
 //Extra Credit: 
