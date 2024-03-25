@@ -5,15 +5,15 @@
 
 struct Entity{
     std::vector<std::unique_ptr<Component>> components;
+    bool selected;
     //Constructors
-    Entity() {AddComponent<TransformComponent>();}
+    Entity() : selected(false){AddComponent<TransformComponent>();}
     Entity(const Entity&) = delete;
     Entity(Entity&& other): components(std::move(other.components)){
         for(auto& c: components){
             c->object = this;
         }
     }
-    
     //Add component
     template<std::derived_from<Component> T, typename... Ts>
     size_t AddComponent(Ts... args){
@@ -33,6 +33,12 @@ struct Entity{
             if(cast) return *cast;
         }
         return std::nullopt;
+    }
+    //Update 
+    void update(float dt){
+        for(auto& c : components){
+            c->update(dt);
+        }
     }
 };
 

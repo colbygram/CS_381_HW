@@ -14,5 +14,4 @@
 #include "RenderComponent.h"
 #include "Entity.h"
 
-#include "VolumeControl.h"
 #endif

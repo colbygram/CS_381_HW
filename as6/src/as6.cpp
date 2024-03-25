@@ -21,9 +21,11 @@ int main(){
     const std::string boat_file = "SmitHouston_Tug.glb";
     const std::string water_file = "water.jpg";
     const std::string skybox_file = "skybox.png";
+    
     //Window and camera objects
     raylib::Window window(WIDTH, HEIGHT, "CS 381 - Assignment 6");
-    raylib::Camera3D main_camera(raylib::Vector3(150,150,150), raylib::Vector3(0,0,0), raylib::Vector3(0,1,0), 90, CAMERA_PERSPECTIVE);
+    raylib::Camera3D main_camera(raylib::Vector3(0,50,150), raylib::Vector3(0,0,0), raylib::Vector3(0,1,0), 90, CAMERA_PERSPECTIVE);
+    
     //water plane and texture load
     auto plane_mesh = raylib::Mesh::Plane(10'000, 10'000, 5, 5, 5);
     raylib::Model water_plane = ((raylib::Mesh*)&plane_mesh)->LoadModelFrom();
@@ -32,10 +34,12 @@ int main(){
     water.SetWrap(TEXTURE_WRAP_REPEAT);
     water_plane.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = water;
     
-    //Vectors for different aspects of the plane
-    raylib::Vector3 camera_position(0,50,100);
+    //Boat and Plane model load
+    raylib::Model plane_model(mesh_path+plane_file);
+    raylib::Model boat_model(mesh_path+boat_file);
 
-    Entity test;
+    std::vector<Entity> entities;
+    Entity boat01;
 
     while (!window.ShouldClose()) {
         //Render
@@ -43,6 +47,9 @@ int main(){
             window.ClearBackground(GRAY);
             main_camera.BeginMode();
                 water_plane.Draw({});
+                for(auto& e: entities){
+                    e.update(GetFrameTime());
+                }
             main_camera.EndMode();
             DrawControls();
         window.EndDrawing();

@@ -2,7 +2,7 @@
 Entities and Components
 
 # Features Not Present
-Couldn't get the skybox functioning in time. Tried to reach out but never got a response so wasn't able to figure out the issue.
+Started on it way to late and wasn't able to finish. Can't figure out why the entity and components don't function because they had been on a previous build but are now broken.
 
 # Pre-Install
 Due to errors with MSVC, it is recommended to install WSL (https://learn.microsoft.com/en-us/windows/wsl/install). Using Ubuntu, WSL's default distribution, the following commands will install the G++ compiler which will allow for the code to be compiled.
