@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 3.18)
+project(DuckLib LANGUAGES CXX)
+add_subdirectory(raylib-cpp)
+file(GLOB sources "src/*.cpp" "src/*.c")
+add_executable(as6 ${sources})
+target_link_libraries(as6 PUBLIC raylib raylib_cpp raygui)
+set_property(TARGET as6 PROPERTY CXX_STANDARD 20)
+
+configure_file(assets/textures/skybox.png assets/textures/skybox.png COPYONLY)
+configure_file(assets/textures/water.jpg assets/textures/water.jpg COPYONLY)
+configure_file(assets/meshes/PolyPlane.glb assets/meshes/PolyPlane.glb COPYONLY)
+configure_file(assets/meshes/SmitHouston_Tug.glb assets/meshes/SmitHouston_Tug.glb COPYONLY)

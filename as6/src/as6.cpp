@@ -1,0 +1,67 @@
+//Author: Colby Gramelspacher
+//Reference: raylib cheatsheet (https://www.raylib.com/cheatsheet/cheatsheet.html), 
+//           vector magnitude (https://socratic.org/questions/how-do-you-find-the-vector-v-with-the-given-magnitude-of-9-and-in-the-same-direc), 
+//           forward vector calculation (https://gamedev.stackexchange.com/questions/190054/how-to-calculate-the-forward-up-right-vectors-using-the-rotation-angles)
+//Problem: Render multiple plane models, skybox, and ground. Add controls to the planes to simulate plane behavior and be able to switch between the planes
+//Solution: Use designated inputs, vector math and physics to allow the plane to move in a semi realistic behavior, 
+//Extra Credit: 
+
+#include "Resources.h"
+
+void inline DrawVector3Text(std::string title ,int posX, int posY, raylib::Vector3 vector);
+void inline DrawControls();
+
+int main(){
+    //Consts
+    const int WIDTH = 1920/2;
+    const int HEIGHT = 1080/2;
+    const std::string mesh_path = "assets/meshes/";
+    const std::string texture_path = "assets/textures/";
+    const std::string plane_file = "PolyPlane.glb";
+    const std::string boat_file = "SmitHouston_Tug.glb";
+    const std::string water_file = "water.jpg";
+    const std::string skybox_file = "skybox.png";
+    //Window and camera objects
+    raylib::Window window(WIDTH, HEIGHT, "CS 381 - Assignment 6");
+    raylib::Camera3D main_camera(raylib::Vector3(150,150,150), raylib::Vector3(0,0,0), raylib::Vector3(0,1,0), 90, CAMERA_PERSPECTIVE);
+    //water plane and texture load
+    auto plane_mesh = raylib::Mesh::Plane(10'000, 10'000, 5, 5, 5);
+    raylib::Model water_plane = ((raylib::Mesh*)&plane_mesh)->LoadModelFrom();
+    raylib::Texture2D water(texture_path + water_file);
+    water.SetFilter(TEXTURE_FILTER_BILINEAR);
+    water.SetWrap(TEXTURE_WRAP_REPEAT);
+    water_plane.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = water;
+    
+    //Vectors for different aspects of the plane
+    raylib::Vector3 camera_position(0,50,100);
+
+    Entity test;
+
+    while (!window.ShouldClose()) {
+        //Render
+        window.BeginDrawing();
+            window.ClearBackground(GRAY);
+            main_camera.BeginMode();
+                water_plane.Draw({});
+            main_camera.EndMode();
+            DrawControls();
+        window.EndDrawing();
+    }
+    return 0;
+}
+
+void inline DrawVector3Text(std::string title ,int posX, int posY, raylib::Vector3 vector){
+    raylib::Text print("", 20 , WHITE, GetFontDefault(), 1.5);
+    std::stringstream convert; 
+    convert.str(std::string());
+    convert<<title<<vector.x<<", "<<vector.y<<", "<<vector.z;
+    print.text = convert.str();
+    print.Draw(posX,posY);
+}
+void inline DrawControls(){
+    DrawText("Use [W] and [S] to accelerate and decelerate", GetRenderWidth() - MeasureText("Use [W] and [S] to accelerate and decelerate",20) - 5, 10, 20, GREEN);
+    DrawText("Use [A] and [D] to toggle turn left or turn right", GetRenderWidth() - MeasureText("Use [A] and [D] to turn left or turn right",20) - 5, 30, 20, GREEN);
+    DrawText("Use [Q] and [E] to accelerate and decelerate vertically", GetRenderWidth() - MeasureText("Use [Q] and [E] to accelerate and decelerate vertically",20) - 5, 50, 20, GREEN);
+    DrawText("Use ARROW KEYS to move camera up, down, left and right", GetRenderWidth() - MeasureText("Use ARROW KEYS to move camera up, down, left and right",20) - 5, 70, 20, GREEN);
+    DrawText("Use TAB to switch between planes", GetRenderWidth() - MeasureText("Use TAB to switch between planes",20) - 5, 90, 20, GREEN);
+}
