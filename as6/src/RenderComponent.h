@@ -4,7 +4,7 @@
 #include "Component.h"
 
 struct RenderComponent : public Component{
-    raylib::Model model;
+    raylib::Model* model;
     using Component::Component;
     void setup() override{}
     void cleanup() override{}

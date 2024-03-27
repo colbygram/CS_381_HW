@@ -24,7 +24,7 @@ int main(){
     
     //Window and camera objects
     raylib::Window window(WIDTH, HEIGHT, "CS 381 - Assignment 6");
-    raylib::Camera3D main_camera(raylib::Vector3(0,50,150), raylib::Vector3(0,0,0), raylib::Vector3(0,1,0), 90, CAMERA_PERSPECTIVE);
+    raylib::Camera3D main_camera(raylib::Vector3(500,150,500), raylib::Vector3(0,0,0), raylib::Vector3(0,1,0), 90, CAMERA_PERSPECTIVE);
     
     //water plane and texture load
     auto plane_mesh = raylib::Mesh::Plane(10'000, 10'000, 5, 5, 5);
@@ -38,8 +38,30 @@ int main(){
     raylib::Model plane_model(mesh_path+plane_file);
     raylib::Model boat_model(mesh_path+boat_file);
 
-    std::vector<Entity> entities;
-    Entity boat01;
+    std::vector<Entity*> entities;
+    Entity boat01, boat02;
+    //Boat 1
+    boat01.AddComponent<RenderComponent>();
+    {
+        auto ref = boat01.GetComponent<RenderComponent>();
+        if(ref) {
+            ref->get().model = &boat_model;
+            std::cout << "Model setup\n";
+        }
+    }
+    entities.push_back(&boat01);
+    //Boat 2
+    boat02.AddComponent<RenderComponent>();
+    auto ref = boat02.GetComponent<RenderComponent>();
+    if(ref) {
+        ref->get().model = &boat_model;
+        std::cout << "Model setup\n";
+    }
+    entities.push_back(&boat02);
+    boat02.GetComponent<TransformComponent>()->get().position.SetX(300);
+    boat02.GetComponent<TransformComponent>()->get().position.SetZ(300);
+
+    main_camera.SetTarget(boat01.GetComponent<TransformComponent>()->get().position);
 
     while (!window.ShouldClose()) {
         //Render
@@ -48,7 +70,7 @@ int main(){
             main_camera.BeginMode();
                 water_plane.Draw({});
                 for(auto& e: entities){
-                    e.update(GetFrameTime());
+                    e->update(GetFrameTime());
                 }
             main_camera.EndMode();
             DrawControls();

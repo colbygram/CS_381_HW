@@ -1,7 +1,13 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "Resources.h"
+#include "Component.h"
+#include "TransformComponent.h"
+#include <vector>
+#include <memory>
+#include <concepts>
+#include <optional>
+#include <iostream>
 
 struct Entity{
     std::vector<std::unique_ptr<Component>> components;
@@ -38,6 +44,11 @@ struct Entity{
     void update(float dt){
         for(auto& c : components){
             c->update(dt);
+        }
+    }
+    void setup(){
+        for(auto& c : components){
+            c->setup();
         }
     }
 };

@@ -1,7 +1,7 @@
 #ifndef COMPONENT_H
 #define COMPONENT_H
 
-#include "Resources.h"
+#include "../raylib-cpp/include/raylib-cpp.hpp"
 
 struct Component{
     struct Entity* object;

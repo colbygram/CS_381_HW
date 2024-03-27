@@ -19,3 +19,6 @@
 [submodule "as6/raylib-cpp"]
 	path = as6/raylib-cpp
 	url = https://github.com/joshuadahlunr/raylib-cpp.git
+[submodule "as7/raylib-cpp"]
+	path = as7/raylib-cpp
+	url = https://github.com/joshuadahlunr/raylib-cpp.git
