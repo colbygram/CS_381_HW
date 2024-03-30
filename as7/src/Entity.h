@@ -12,7 +12,7 @@
 struct Entity{
     std::vector<std::unique_ptr<Component>> components;
     //Constructors
-    Entity() {AddComponent<TransformComponent>(); AddComponent<RenderComponent>();}
+    Entity() {AddComponent<TransformComponent>();}
     //Copy constructor deleted
     Entity(const Entity&) = delete;
     //Move Constructor

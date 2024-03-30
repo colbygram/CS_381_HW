@@ -27,7 +27,7 @@ int main(){
     raylib::Camera3D main_camera(raylib::Vector3(500,150,500), raylib::Vector3(0,0,0), raylib::Vector3(0,1,0), 90, CAMERA_PERSPECTIVE);
     
     //water plane and texture load
-    auto plane_mesh = raylib::Mesh::Plane(10'000, 10'000, 5, 5, 5);
+    auto plane_mesh = raylib::Mesh::Plane(10'000, 10'000, 16, 16, 10);
     raylib::Model water_plane = ((raylib::Mesh*)&plane_mesh)->LoadModelFrom();
     raylib::Texture2D water(texture_path + water_file);
     water.SetFilter(TEXTURE_FILTER_BILINEAR);
@@ -41,7 +41,6 @@ int main(){
     std::vector<Entity*> entities;
     Entity boat01, boat02;
     //Boat 1
-    boat01.AddComponent<RenderComponent>();
     {
         auto ref = boat01.GetComponent<RenderComponent>();
         if(ref) {
@@ -51,7 +50,6 @@ int main(){
     }
     entities.push_back(&boat01);
     //Boat 2
-    boat02.AddComponent<RenderComponent>();
     auto ref = boat02.GetComponent<RenderComponent>();
     if(ref) {
         ref->get().model = &boat_model;
