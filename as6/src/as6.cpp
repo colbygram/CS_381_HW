@@ -2,8 +2,8 @@
 //Reference: raylib cheatsheet (https://www.raylib.com/cheatsheet/cheatsheet.html), 
 //           vector magnitude (https://socratic.org/questions/how-do-you-find-the-vector-v-with-the-given-magnitude-of-9-and-in-the-same-direc), 
 //           forward vector calculation (https://gamedev.stackexchange.com/questions/190054/how-to-calculate-the-forward-up-right-vectors-using-the-rotation-angles)
-//Problem: Render multiple plane models, skybox, and ground. Add controls to the planes to simulate plane behavior and be able to switch between the planes
-//Solution: Use designated inputs, vector math and physics to allow the plane to move in a semi realistic behavior, 
+//Problem: 
+//Solution: 
 //Extra Credit: 
 
 #include "Resources.h"
@@ -39,28 +39,22 @@ int main(){
     raylib::Model boat_model(mesh_path+boat_file);
 
     std::vector<Entity*> entities;
-    Entity boat01, boat02;
-    //Boat 1
-    {
-        auto ref = boat01.GetComponent<RenderComponent>();
-        if(ref) {
-            ref->get().model = &boat_model;
-            std::cout << "Model setup\n";
-        }
-    }
+    Boat boat01(&boat_model), boat02(&boat_model), boat03(&boat_model), boat04(&boat_model), boat05(&boat_model);
     entities.push_back(&boat01);
-    //Boat 2
-    auto ref = boat02.GetComponent<RenderComponent>();
-    if(ref) {
-        ref->get().model = &boat_model;
-        std::cout << "Model setup\n";
-    }
     entities.push_back(&boat02);
+    entities.push_back(&boat03);
+    entities.push_back(&boat04);
+    entities.push_back(&boat05);
+
     boat02.GetComponent<TransformComponent>()->get().position.SetX(300);
     boat02.GetComponent<TransformComponent>()->get().position.SetZ(300);
 
     main_camera.SetTarget(boat01.GetComponent<TransformComponent>()->get().position);
 
+    //setup entities and components
+    for(auto& e: entities){
+        e->setup();
+    }
     while (!window.ShouldClose()) {
         //Render
         window.BeginDrawing();
@@ -74,6 +68,11 @@ int main(){
             DrawControls();
         window.EndDrawing();
     }
+    //cleanup entities and components
+    for(auto& e: entities){
+        e->cleanup();
+    }
+
     return 0;
 }
 

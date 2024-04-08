@@ -7,24 +7,34 @@
 //Extra Credit: 
 
 #include "Resources.h"
+#include "VolumeControl.h"
+
+void PingButton(){
+    std::cout << "Ping\n";
+}
 
 int main(){
     //Consts
-    const int WIDTH = 1920/2;
-    const int HEIGHT = 1080/2;
+    const int WIDTH = 1920;
+    const int HEIGHT = 1080;
     
     //Window and camera objects
     raylib::Window window(WIDTH, HEIGHT, "CS 381 - Assignment 7");
-    raylib::Camera3D main_camera(raylib::Vector3(100,50,100),raylib::Vector3(0,0,0), raylib::Vector3(0,1,0), 90, CAMERA_PERSPECTIVE);
+    raylib::Camera2D main_camera(raylib::Vector2(0,0), raylib::Vector2(0,0), 0 , 1);
+
+    auto gui = InitGuiVolumeControl();
 
     while (!window.ShouldClose()) {
         //Render
         window.BeginDrawing();
-            window.ClearBackground(raylib::Color::SkyBlue());
+            window.ClearBackground(raylib::Color(15,15,35,255));
             main_camera.BeginMode();
-                DrawGrid(1000, 25);
             main_camera.EndMode();
+            GuiVolumeControl(&gui);
         window.EndDrawing();
     }
     return 0;
 }
+
+#define GUI_VOLUMECONTROL_IMPLEMENTATION
+#include "VolumeControl.h"

@@ -5,7 +5,7 @@
 
 struct RenderComponent : public Component{
     raylib::Model* model;
-    using Component::Component;
+    RenderComponent(struct Entity* en,raylib::Model* model);
     void setup() override{}
     void cleanup() override{}
     void update(float dt) override;

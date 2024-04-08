@@ -3,7 +3,7 @@ project(DuckLib LANGUAGES CXX)
 add_subdirectory(raylib-cpp)
 file(GLOB sources "src/*.cpp" "src/*.c")
 add_executable(as7 ${sources})
-target_link_libraries(as7 PUBLIC raylib raylib_cpp)
+target_link_libraries(as7 PUBLIC raylib raylib_cpp raygui)
 set_property(TARGET as7 PROPERTY CXX_STANDARD 20)
 
 configure_file(assets/meshes/PolyPlane.glb assets/meshes/PolyPlane.glb COPYONLY)

@@ -10,6 +10,11 @@
 #include <iostream>
 
 #include "../raylib-cpp/include/raylib-cpp.hpp"
+
+//ITS WORKINGGGGGGGGGGG
+#define RAYGUI_IMPLEMENTATION
+#include "../raylib-cpp/raygui/src/raygui.h"
+
 #include "Component.h"
 #include "TransformComponent.h"
 #include "RenderComponent.h"

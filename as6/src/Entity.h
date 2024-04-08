@@ -12,7 +12,7 @@
 struct Entity{
     std::vector<std::unique_ptr<Component>> components;
     //Constructors
-    Entity() {AddComponent<TransformComponent>(); AddComponent<RenderComponent>();}
+    Entity() {AddComponent<TransformComponent>();}
     //Copy constructor deleted
     Entity(const Entity&) = delete;
     //Move Constructor
@@ -46,14 +46,19 @@ struct Entity{
         return std::nullopt;
     }
     //Update 
-    void update(float dt){
+    virtual void update(float dt){
         for(auto& c : components){
             c->update(dt);
         }
     }
-    void setup(){
+    virtual void setup(){
         for(auto& c : components){
             c->setup();
+        }
+    }
+    virtual void cleanup(){
+        for(auto& c : components){
+            c->cleanup();
         }
     }
 };

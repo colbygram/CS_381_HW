@@ -4,6 +4,10 @@
 #include "TransformComponent.h"
 #include <iostream>
 
+RenderComponent::RenderComponent(struct Entity* en, raylib::Model* model): Component(en){
+    this->model = model;
+}
+
 void RenderComponent::update(float dt){
     auto ref = object->GetComponent<TransformComponent>();
     if(!ref) return;
