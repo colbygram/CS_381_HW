@@ -3,6 +3,9 @@
 
 #include "Component.h"
 #include "TransformComponent.h"
+#include "RenderComponent.h"
+#include "InputComponent.h"
+#include "PhysicComponent.h"
 #include <vector>
 #include <memory>
 #include <concepts>
@@ -11,8 +14,9 @@
 
 struct Entity{
     std::vector<std::unique_ptr<Component>> components;
+    bool selected;
     //Constructors
-    Entity() {AddComponent<TransformComponent>();}
+    Entity() {AddComponent<TransformComponent>(); selected = false;}
     //Copy constructor deleted
     Entity(const Entity&) = delete;
     //Move Constructor
@@ -60,6 +64,21 @@ struct Entity{
         for(auto& c : components){
             c->cleanup();
         }
+    }
+    //Utility
+    void Select(){
+        selected = true;
+        {auto ref = GetComponent<InputComponent>();
+        if(ref) ref->get().enabled = true;}
+        {auto ref = GetComponent<RenderComponent>();
+        if(ref) ref->get().selected = true;}
+    }
+    void Deselect(){
+        selected = false;
+        {auto ref = GetComponent<InputComponent>();
+        if(ref) ref->get().enabled = false;}
+        {auto ref = GetComponent<RenderComponent>();
+        if(ref) ref->get().selected = false;}
     }
 };
 

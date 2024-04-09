@@ -39,23 +39,26 @@ int main(){
     raylib::Model boat_model(mesh_path+boat_file);
 
     std::vector<Entity*> entities;
-    Boat boat01(&boat_model), boat02(&boat_model), boat03(&boat_model), boat04(&boat_model), boat05(&boat_model);
+    Boat boat01(&boat_model);
     entities.push_back(&boat01);
-    entities.push_back(&boat02);
-    entities.push_back(&boat03);
-    entities.push_back(&boat04);
-    entities.push_back(&boat05);
-
-    boat02.GetComponent<TransformComponent>()->get().position.SetX(300);
-    boat02.GetComponent<TransformComponent>()->get().position.SetZ(300);
 
     main_camera.SetTarget(boat01.GetComponent<TransformComponent>()->get().position);
-
+    raylib::Vector3 camera_offset = {0,25,-50};
     //setup entities and components
     for(auto& e: entities){
         e->setup();
     }
+    boat01.Select();
     while (!window.ShouldClose()) {
+        main_camera.SetPosition(boat01.GetComponent<TransformComponent>()->get().position + camera_offset);
+        main_camera.SetTarget(boat01.GetComponent<TransformComponent>()->get().position);
+        if(IsKeyPressed(KEY_TAB)){
+            if(boat01.selected){
+                boat01.Deselect();
+            }else{
+                boat01.Select();
+            }
+        }
         //Render
         window.BeginDrawing();
             window.ClearBackground(GRAY);

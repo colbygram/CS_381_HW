@@ -4,6 +4,7 @@
 #include "Component.h"
 
 struct RenderComponent : public Component{
+    bool selected;
     raylib::Model* model;
     RenderComponent(struct Entity* en,raylib::Model* model);
     void setup() override{}
