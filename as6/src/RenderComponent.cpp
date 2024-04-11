@@ -4,7 +4,7 @@
 #include "TransformComponent.h"
 #include <iostream>
 
-RenderComponent::RenderComponent(struct Entity* en, raylib::Model* model): Component(en){
+RenderComponent::RenderComponent(Entity* en, raylib::Model* model): Component(en){
     this->model = model;
     selected = false;
 }

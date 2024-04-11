@@ -15,8 +15,13 @@
 struct Entity{
     std::vector<std::unique_ptr<Component>> components;
     bool selected;
+    TransformComponent* transform;
     //Constructors
-    Entity() {AddComponent<TransformComponent>(); selected = false;}
+    Entity() {
+        AddComponent<TransformComponent>(); 
+        selected = false;
+        transform = &GetComponent<TransformComponent>()->get();
+    }
     //Copy constructor deleted
     Entity(const Entity&) = delete;
     //Move Constructor

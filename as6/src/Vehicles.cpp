@@ -4,25 +4,15 @@
 #include "RenderComponent.h"
 #include "InputComponent.h"
 
+////////////////////////////////////VEHICLE STRUCT////////////////////////////////////////////////
 Vehicle::Vehicle(raylib::Model* model) : Entity(){
     AddComponent<RenderComponent>(model);
     AddComponent<InputComponent>();
     AddComponent<PhysicComponent>();
 }
 
-Plane::Plane(raylib::Model* model): Vehicle(model){
-    
-}
-
+////////////////////////////////////PLANE STRUCT////////////////////////////////////////////////
 void Plane::setup(){
-
-}
-
-void Plane::update(float dt){
-
-}
-
-void Boat::setup(){
     {
         auto input_ref = GetComponent<InputComponent>();
         if(!input_ref) return;
@@ -30,9 +20,6 @@ void Boat::setup(){
         auto phys_ref = GetComponent<PhysicComponent>();
         if(!phys_ref) return;
         physics = &phys_ref->get();
-        auto trans_ref = GetComponent<TransformComponent>();
-        if(!trans_ref) return;
-        transform = &trans_ref->get();
     }
     input_manager->inputs["W"] = raylib::Action::key(KEY_W)
     .SetPressedCallback([this]{
@@ -42,11 +29,11 @@ void Boat::setup(){
     .SetPressedCallback([this]{
         physics->DecrementSpeed();
     }).move();
-    input_manager->inputs["A"] = raylib::Action::key(KEY_A)
+    input_manager->inputs["Left"] = raylib::Action::key(KEY_LEFT)
     .SetPressedCallback([this]{
         physics->IncrementYaw();
     }).move();
-    input_manager->inputs["D"] = raylib::Action::key(KEY_D)
+    input_manager->inputs["Right"] = raylib::Action::key(KEY_RIGHT)
     .SetPressedCallback([this]{
         physics->DecrementYaw();
     }).move();
@@ -68,8 +55,38 @@ void Boat::setup(){
     }
 }
 
-void Boat::update(float dt){
+////////////////////////////////////BOAT STRUCT////////////////////////////////////////////////
+void Boat::setup(){
+    {
+        auto input_ref = GetComponent<InputComponent>();
+        if(!input_ref) return;
+        input_manager = &input_ref->get();
+        auto phys_ref = GetComponent<PhysicComponent>();
+        if(!phys_ref) return;
+        physics = &phys_ref->get();
+    }
+    input_manager->inputs["W"] = raylib::Action::key(KEY_W)
+    .SetPressedCallback([this]{
+        physics->IncrementSpeed();
+    }).move();
+    input_manager->inputs["S"] = raylib::Action::key(KEY_S)
+    .SetPressedCallback([this]{
+        physics->DecrementSpeed();
+    }).move();
+    input_manager->inputs["A"] = raylib::Action::key(KEY_A)
+    .SetPressedCallback([this]{
+        physics->IncrementYaw();
+    }).move();
+    input_manager->inputs["D"] = raylib::Action::key(KEY_D)
+    .SetPressedCallback([this]{
+        physics->DecrementYaw();
+    }).move();
+    input_manager->inputs["SPACE"] = raylib::Action::key(KEY_SPACE)
+    .SetPressedCallback([this]{
+        physics->Reset();
+    }).move();
+
     for(auto& c : components){
-        c->update(dt);
+        c->setup();
     }
 }
