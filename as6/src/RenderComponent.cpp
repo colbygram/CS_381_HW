@@ -19,7 +19,7 @@ void RenderComponent::update(float dt){
     //Convert quaternion to axis angle
     auto [axis, angle] = transform.rotation.ToAxisAngle();
     //Set models new transform
-    model->SetTransform(raylib::Transform(model->transform).Translate(transform.position).Rotate(axis,angle));
+    model->SetTransform(raylib::Transform(model->transform).Translate(transform.position).Rotate(axis,angle).Scale(transform.scale.x, transform.scale.y, transform.scale.z));
     model->Draw({});
     if(selected) model->GetTransformedBoundingBox().Draw();
     //Reset old model transform

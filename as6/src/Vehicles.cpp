@@ -12,15 +12,15 @@ Vehicle::Vehicle(raylib::Model* model) : Entity(){
 }
 
 ////////////////////////////////////PLANE STRUCT////////////////////////////////////////////////
+Plane::Plane(raylib::Model* model): Vehicle(model){
+    auto input_ref = GetComponent<InputComponent>();
+    if(!input_ref) return;
+    input_manager = &input_ref->get();
+    auto phys_ref = GetComponent<PhysicComponent>();
+    if(!phys_ref) return;
+    physics = &phys_ref->get();
+}
 void Plane::setup(){
-    {
-        auto input_ref = GetComponent<InputComponent>();
-        if(!input_ref) return;
-        input_manager = &input_ref->get();
-        auto phys_ref = GetComponent<PhysicComponent>();
-        if(!phys_ref) return;
-        physics = &phys_ref->get();
-    }
     input_manager->inputs["W"] = raylib::Action::key(KEY_W)
     .SetPressedCallback([this]{
         physics->IncrementSpeed();
@@ -56,15 +56,19 @@ void Plane::setup(){
 }
 
 ////////////////////////////////////BOAT STRUCT////////////////////////////////////////////////
+Boat::Boat(raylib::Model* model, float acceleration, float turn_rate, float max_speed): Vehicle(model){
+    auto input_ref = GetComponent<InputComponent>();
+    if(!input_ref) return;
+    input_manager = &input_ref->get();
+    auto phys_ref = GetComponent<PhysicComponent>();
+    if(!phys_ref) return;
+    physics = &phys_ref->get();
+
+    physics->acceleration = acceleration;
+    physics->turn_rate = turn_rate;
+    physics->max_speed = max_speed;
+}
 void Boat::setup(){
-    {
-        auto input_ref = GetComponent<InputComponent>();
-        if(!input_ref) return;
-        input_manager = &input_ref->get();
-        auto phys_ref = GetComponent<PhysicComponent>();
-        if(!phys_ref) return;
-        physics = &phys_ref->get();
-    }
     input_manager->inputs["W"] = raylib::Action::key(KEY_W)
     .SetPressedCallback([this]{
         physics->IncrementSpeed();

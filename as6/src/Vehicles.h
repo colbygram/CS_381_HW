@@ -11,12 +11,12 @@ struct Vehicle: public Entity{
 };
 
 struct Plane : public Vehicle{
-    using Vehicle::Vehicle;
+    Plane(raylib::Model* model);
     void setup() override;
 };
 
 struct Boat : public Vehicle{
-    using Vehicle::Vehicle;
+    Boat(raylib::Model* model, float acceleration, float turn_rate, float max_speed);
     void setup() override;
 };
 #endif

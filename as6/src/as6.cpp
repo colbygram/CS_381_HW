@@ -32,14 +32,14 @@ int main(){
     const std::string mesh_path = "assets/meshes/";
     const std::string texture_path = "assets/textures/";
     const std::string plane_file = "PolyPlane.glb";
-    const std::string boat_file = "SmitHouston_Tug.glb";
+    const std::string boat_files[5] = {"SmitHouston_Tug.glb", "CargoG_HOSBrigadoon.glb", "Container_ShipLarge.glb", "OilTanker.glb", "OrientExplorer.glb"};
     const std::string water_file = "water.jpg";
     const std::string skybox_file = "skybox.png";
     
     //Window and camera objects
     raylib::Window window(WIDTH, HEIGHT, "CS 381 - Assignment 6");
     raylib::Camera3D main_camera(raylib::Vector3(500,150,500), raylib::Vector3(0,0,0), raylib::Vector3(0,1,0), 90, CAMERA_PERSPECTIVE);
-    raylib::Vector3 camera_offset = {0,25,-50};
+    raylib::Vector3 camera_offset = {0,50,-100};
     
     //water plane and texture load
     Mesh plane_mesh = raylib::Mesh::Plane(10'000, 10'000, 16, 16, 10);
@@ -53,18 +53,26 @@ int main(){
     raylib::Model plane_model(mesh_path+plane_file);
     //Plane models default orientation needed to be updated by -90 degrees
     plane_model.SetTransform(raylib::Transform(plane_model.transform).RotateY(raylib::Radian(-1.571)));
-    raylib::Model boat_model(mesh_path+boat_file);
-    
+    raylib::Model boat01_model(mesh_path+boat_files[0]), boat02_model(mesh_path+boat_files[1]), boat03_model(mesh_path+boat_files[2]), boat04_model(mesh_path+boat_files[3]), boat05_model(mesh_path+boat_files[4]);
+    //each boat needs to be adjusted
+    boat02_model.SetTransform(raylib::Transform(boat02_model.transform).RotateX(raylib::Radian(1.571)).RotateY(PI));
+    boat03_model.SetTransform(raylib::Transform(boat03_model.transform).RotateX(raylib::Radian(1.571)));
+    boat04_model.SetTransform(raylib::Transform(boat04_model.transform).RotateX(raylib::Radian(1.571)));
+    boat05_model.SetTransform(raylib::Transform(boat05_model.transform).RotateX(raylib::Radian(1.571)).RotateY(PI));
     //Entity container
     std::vector<Entity*> entities;
     int current_index = 0;
     //Boat init and push_back into entity container
-    Boat boat01(&boat_model), boat02(&boat_model), boat03(&boat_model), boat04(&boat_model), boat05(&boat_model);
+    Boat boat01(&boat01_model, 20, 1, 5), boat02(&boat02_model, 20, 1, 10), boat03(&boat03_model, 10, 0.25, 3), boat04(&boat04_model, 12, 0.25, 6), boat05(&boat05_model, 15, 1, 9);
     boat01.transform->position = raylib::Vector3(0,0, -150);
     boat02.transform->position = raylib::Vector3(0,0, -75);
+    boat02.transform->scale = raylib::Vector3(0.01,0.01,0.01);
     boat03.transform->position = raylib::Vector3(0,0, 0);
+    boat03.transform->scale = raylib::Vector3(0.01,0.01,0.01);
     boat04.transform->position = raylib::Vector3(0,0, 75);
+    boat04.transform->scale = raylib::Vector3(0.01,0.01,0.01);
     boat05.transform->position = raylib::Vector3(0,0, 150);
+    boat05.transform->scale = raylib::Vector3(0.01,0.01,0.01);
     entities.push_back(&boat01);
     entities.push_back(&boat02);
     entities.push_back(&boat03);

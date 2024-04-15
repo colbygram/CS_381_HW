@@ -6,11 +6,8 @@
 
 void PhysicComponent::setup(){
     velocity = raylib::Vector3(0,0,0);
-    acceleration = 20;
-    turn_rate = 1;
     turn_dir_yaw = turn_dir_pitch = 0;
     speed = 0;
-    max_speed = 10;
     forward_vector = raylib::Vector3(0,0,1);
 }
 void PhysicComponent::update(float dt){
@@ -22,8 +19,6 @@ void PhysicComponent::update(float dt){
     CalculateForwardVector(transform.euler_angles);
     velocity = (forward_vector * speed);
     transform.position += velocity;
-
-    std::cout << speed << std::endl;
 }
 
 void PhysicComponent::IncrementSpeed(){
