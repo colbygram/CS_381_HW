@@ -25,7 +25,6 @@ void Plane::setup(){
     input_manager->inputs["W"] = raylib::Action::key(KEY_W)
     .SetPressedCallback([this]{
         physics->IncrementSpeed();
-        std::cout << "W" << std::endl;
     }).move();
     input_manager->inputs["S"] = raylib::Action::key(KEY_S)
     .SetPressedCallback([this]{
