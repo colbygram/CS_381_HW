@@ -8,6 +8,8 @@ void PhysicComponent::setup(){
     velocity = raylib::Vector3(0,0,0);
     turn_dir_yaw = turn_dir_pitch = 0;
     speed = 0;
+    max_speed = 5;
+    acceleration = 20;
     forward_vector = raylib::Vector3(0,0,1);
 }
 void PhysicComponent::update(float dt){
