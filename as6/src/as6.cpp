@@ -20,7 +20,8 @@ void VehicleControls(const bool toggle){
         DrawText("Use [A] and [D] to turn the boats left and right", GetRenderWidth() - MeasureText("Use [A] and [D] to turn the boats left and right",20) - 5, 140, 20, GREEN);
         DrawText("Use TAB to switch between vehicles", GetRenderWidth() - MeasureText("Use TAB to switch between vehicles",20) - 5, 160, 20, GREEN);
     }else{
-        DrawText("[C] for controls", GetRenderWidth() - MeasureText("[ESC] for controls",20) - 5, 10, 20, GREEN);
+        DrawText("[C] for controls", GetRenderWidth() - MeasureText("[C] for controls",20) - 5, 10, 20, GREEN);
+        DrawText("[TAB] to switch between entities", GetRenderWidth() - MeasureText("[TAB] to switch between entities",20) - 5, 30, 20, GREEN);
     }
 }
 
