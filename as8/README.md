@@ -1,9 +1,5 @@
-# Assignment 6: 
-Entities and Components
-
-# Extra Credit:
-Implemented third person camera as described and made planes have the ability to maneuver in the air beyond just turning left and right.
-Not as smooth as it could be with control from mouse delta but I was too lazy to deal with it :(
+# Assignment 8: 
+Data Oriented Entities and Components
 
 # Pre-Install
 Due to errors with MSVC, it is recommended to install WSL (https://learn.microsoft.com/en-us/windows/wsl/install). Using Ubuntu, WSL's default distribution, the following commands will install the G++ compiler which will allow for the code to be compiled.
@@ -14,8 +10,8 @@ sudo apt-get install g++
 Reminder that these commands must be run in the WSL shell and so should the following commands. The WSL shell can be accessed by using the ```wsl``` command in and Windows terminal
 
 # Init Submodules
-Enter the ```as6``` directory
-```cd as6```
+Enter the ```as8``` directory
+```cd as8```
 
 Initialize the submodules needed
 ```
@@ -39,4 +35,4 @@ make
 ```
 
 # Run Executable and Operation
-Use ```./as6``` to run the executable previously built. Planes and Boats use W and S to accelerate/decelerate. Boats use A and D to turn. Planes use the ARROW KEYS to maneuver in air
+Use ```./as8``` to run the executable previously built. Planes and Boats use W and S to accelerate/decelerate. Boats use A and D to turn. Planes use the ARROW KEYS to maneuver in air

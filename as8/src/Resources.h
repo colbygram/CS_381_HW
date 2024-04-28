@@ -8,7 +8,9 @@
 #include <memory>
 #include <optional>
 #include <iostream>
+#include <cassert>
 
 #include "../raylib-cpp/include/raylib-cpp.hpp"
+#include <BufferedInput.hpp>
 
 #endif
