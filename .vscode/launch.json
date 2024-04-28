@@ -28,7 +28,7 @@
       "stopAtEntry": false,
       "externalConsole": false,
       "cwd": "/home/colbygram/dev/CS_381_HW/as1/src",
-      "program": "/home/colbygram/dev/CS_381_HW/as1/src/build/Debug/outDebug",
+      "program": "/home/colbygram/dev/CS_381_HW/as8/build/as8",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
