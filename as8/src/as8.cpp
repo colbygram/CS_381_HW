@@ -298,40 +298,20 @@ int main(){
 
     //Boat Inputs
     //New idea: Make input work :(
-    boat_input["W"] = raylib::Action::key(KEY_W)
-    .SetPressedCallback([&scene, entities, current_index]{
-        if(!scene.HasComponent<Physics2D>(entities[current_index])) return;
-        auto& physics = scene.GetComponent<Physics2D>(entities[current_index]);
-        if(physics.speed < physics.max_speed) physics.speed += physics.acceleration * GetFrameTime();
-        else physics.speed = physics.max_speed;
-    }).move();
+    boat_input["W"] = raylib::Action::key(KEY_W);
+    boat_input["W"].data.button.last_state;
     boat_input["S"] = raylib::Action::key(KEY_S)
-    .SetPressedCallback([&scene, entities, current_index]{
-        if(!scene.HasComponent<Physics2D>(entities[current_index])) return;
-        auto& physics = scene.GetComponent<Physics2D>(entities[current_index]);
-        if(physics.speed > -physics.max_speed) physics.speed -= physics.acceleration * GetFrameTime();
-        else physics.speed = -physics.max_speed;
+    .SetPressedCallback([]{
+
     }).move();
-    boat_input["A"] = raylib::Action::key(KEY_A)
-    .SetPressedCallback([&scene, entities, current_index]{
-        if(!scene.HasComponent<Physics2D>(entities[current_index])) return;
-        auto& physics = scene.GetComponent<Physics2D>(entities[current_index]);
-        physics.turn_yaw--;
-        if(physics.turn_yaw < -1) physics.turn_yaw = 0;
-    }).move();
+    boat_input["A"] = raylib::Action::key(KEY_A);
     boat_input["D"] = raylib::Action::key(KEY_D)
-    .SetPressedCallback([&scene, entities, current_index]{
-        if(!scene.HasComponent<Physics2D>(entities[current_index])) return;
-        auto& physics = scene.GetComponent<Physics2D>(entities[current_index]);
-        physics.turn_yaw++;
-        if(physics.turn_yaw > 1) physics.turn_yaw = 0;
+    .SetPressedCallback([]{
+        
     }).move();
     boat_input["SPACE"] = raylib::Action::key(KEY_SPACE)
-    .SetPressedCallback([&scene, entities, current_index]{
-        if(!scene.HasComponent<Physics2D>(entities[current_index])) return;
-        auto& physics = scene.GetComponent<Physics2D>(entities[current_index]);
-        physics.speed = 0;
-        physics.turn_yaw = 0;
+    .SetPressedCallback([]{
+
     }).move();
 
     //Control menu toggle
