@@ -199,6 +199,8 @@ int main(){
     water.SetFilter(TEXTURE_FILTER_BILINEAR);
     water.SetWrap(TEXTURE_WRAP_REPEAT);
     water_plane.materials[0].maps[MATERIAL_MAP_DIFFUSE].texture = water;
+
+    water_plane.GetTransformedBoundingBox();
     
     //Boat and Plane model load
     raylib::Model plane_model(mesh_path+plane_file);

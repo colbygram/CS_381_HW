@@ -11,112 +11,108 @@
 #include <span>
 #include <variant>
 #include <cassert>
+#include "Generator.hpp"
 
-extern size_t globalComponentCounter;
+/// @brief 
+/// Type erasured storage method for component types. Necessary when components are unknown in advance and the data structures must dynamically adapt
+/// @var 
+/// component_data: a vector of bytes that will be allocated for dynamic
+/// @ref
+/// Basically exact implementation from class. Few changes here and there. Don't know of any other effective type erasure methods beyond this one
 
-template<typename T>
-size_t GetComponentID(T reference = {}) {
-    static size_t id = globalComponentCounter++;
-    return id;
-}
+#define MAX_ENTITIES 1000
+using Entity = uint16_t;
 
-using Entity = uint8_t; 
+class ComponentStorage{
+public:
+    ComponentStorage() : element_size(-1), component_data(1, std::byte{0}){}
+    template<typename Tcomp>
+    //std::vector<>::reserve sets the capacity of the vector, but does not change the size of it
+    //Use max amount of entities and sizeof(Tcomp) to determine the max bytes to be used
+    ComponentStorage(Tcomp ref = {}) : element_size(sizeof(Tcomp)) {component_data.reserve(MAX_ENTITIES * sizeof(Tcomp));}
 
-//ComponentStorage is a container for varying components
-//Uses std::byte so that it is ambiguous what data can be stored in it
-//
-struct ComponentStorage {
-    size_t elementSize = -1;
-    std::vector<std::byte> data;
-
-    ComponentStorage() : elementSize(-1), data(1, std::byte{0}) {}
-    ComponentStorage(size_t elementSize) : elementSize(elementSize) { data.reserve(5 * elementSize); }
-    
-    template<typename Tcomponent>
-    ComponentStorage(Tcomponent reference = {}) : ComponentStorage(sizeof(Tcomponent)) {}
-
-    template<typename Tcomponent>
-    Tcomponent& Get(Entity e) {
-        assert(sizeof(Tcomponent) == elementSize);
-        assert(e < (data.size() / elementSize));
-        return *(Tcomponent*)(data.data() + e * elementSize);
+    template<typename Tcomp>
+    Tcomp& Get(Entity e_index){
+        assert(element_size == sizeof(Tcomp));
+        return *(Tcomp*)(component_data.data() + (e_index * element_size));
     }
-
-    template<typename Tcomponent>
-    std::pair<Tcomponent&, size_t> Allocate(size_t count = 1) {
-        assert(sizeof(Tcomponent) == elementSize);
-        assert(count < 100);
-        auto originalEnd = data.size();
-        data.insert(data.end(), elementSize * count, std::byte{0});
-        for(size_t i = 0; i < count - 1; i++) // Skip the last one
-            new(data.data() + originalEnd + i * elementSize) Tcomponent();
-        return {
-            *new(data.data() + data.size() - elementSize) Tcomponent(),
-            data.size() / elementSize
-        };
+    template<typename Tcomp>
+    void Allocate(size_t amount){
+        assert(sizeof(Tcomp) == element_size);
+        assert((component_data.size() / element_size) + amount <= MAX_ENTITIES);
+        size_t prior_end = component_data.size();
+        component_data.insert(component_data.end(), amount * element_size, std::byte{0});
+        for(int i = 0; i < amount; i++){
+            //new(parameter) is used to construct memory at a certain place opposed to allocating memory.
+            new(component_data.data() + prior_end + (i * element_size)) Tcomp; 
+        }
     }
-
-    template<typename Tcomponent>
-    Tcomponent& GetOrAllocate(Entity e) {
-        assert(sizeof(Tcomponent) == elementSize);
-        size_t size = data.size() / elementSize;
-        if (size <= e)
-            Allocate<Tcomponent>(std::max<int64_t>(int64_t(e) - size + 1, 1));
-        return Get<Tcomponent>(e);
+    template<typename Tcomp>
+    Tcomp& GetOrAllocate(Entity e_index) {
+        assert(e_index < MAX_ENTITIES);
+        size_t size = component_data.size() / element_size;
+        if (size <= e_index)
+            Allocate<Tcomp>(std::max<int64_t>(e_index - size + 1, 1));
+        return Get<Tcomp>(e_index);
     }
+    size_t GetElementSize(){
+        return element_size;
+    }
+    size_t GetComponentDataSize(){
+        return component_data.size()/element_size;
+    } 
+private:
+    std::vector<std::byte> component_data;
+    size_t element_size;
 };
 
 
-template<typename Storage = ComponentStorage>
-struct Scene {
-    std::vector<std::vector<bool>> entityMasks;
-    std::vector<Storage> storages = {Storage()};
+/// @brief 
+/// Scene manager
+struct SceneManager{
+    std::vector<std::vector<bool>> entity_masks;
+    std::vector<ComponentStorage> components;
 
-    template<typename Tcomponent>
-    Storage& GetStorage() {
-        size_t id = GetComponentID<Tcomponent>();
-        if(storages.size() <= id)
-            storages.insert(storages.cend(), std::max<int64_t>(id - storages.size(), 1), Storage());
-        if (storages[id].elementSize == std::numeric_limits<size_t>::max())
-            storages[id] = Storage(Tcomponent{});
-        return storages[id];
+    Entity CreateEntity(){
+        assert(entity_masks.size() < MAX_ENTITIES);
+        size_t size = entity_masks.size();
+        entity_masks.emplace_back(std::vector<bool>{false});
+        return size;
+    }
+    template<typename Tcomp>
+    Tcomp& AddComponent(Entity e_index){
+        assert(entity_masks.size() > 0);
+        size_t component_index = Generator::TypeID<Tcomp>();
+
+        //Check if component storage exists for component index, if not, then create it
+        if(component_index >= components.size())
+            components.insert(components.cend(), component_index - components.size() + 1, ComponentStorage());
+        if(components[component_index].GetElementSize() == std::numeric_limits<size_t>::max())
+            components[component_index] = ComponentStorage(Tcomp{});
+
+        //Verify entity_mask of e_index size, if smaller than component index, increase by size of component index + 1
+        auto& e_mask = entity_masks[e_index];
+        if(e_mask.size() <= component_index)
+            e_mask.resize(component_index + 1);
+        //Set entity_mask to true
+        e_mask[component_index] = true;
+        return components[component_index].GetOrAllocate<Tcomp>(e_index);
     }
 
-    Entity CreateEntity() {
-        Entity e = entityMasks.size();
-        entityMasks.emplace_back(std::vector<bool>{false});
-        return e;
+    template<typename Tcomp>
+    Tcomp& GetComponent(Entity e_index){
+        size_t component_index = Generator::TypeID<Tcomp>();
+        assert(entity_masks[e_index].size() > component_index);
+        assert(entity_masks[e_index][component_index]);
+        return components[component_index].Get<Tcomp>(e_index);
     }
 
-    template<typename Tcomponent>
-    Tcomponent& AddComponent(Entity e) {
-        size_t id = GetComponentID<Tcomponent>();
-        auto& eMask = entityMasks[e];
-        if(eMask.size() <= id)
-            eMask.resize(id + 1, false);
-        eMask[id] = true;
-        return GetStorage<Tcomponent>().template GetOrAllocate<Tcomponent>(e);
-    }
-
-    template<typename Tcomponent>
-    void RemoveComponent(Entity e) {
-        size_t id = GetComponentID<Tcomponent>();
-        auto& eMask = entityMasks[e];
-        if(eMask.size() > id)
-            eMask[id] = false;
-    }
-
-    template<typename Tcomponent>
-    Tcomponent& GetComponent(Entity e) {
-        size_t id = GetComponentID<Tcomponent>();
-        assert(entityMasks[e][id]);
-        return GetStorage<Tcomponent>().template Get<Tcomponent>(e);
-    }
-
-    template<typename Tcomponent>
-    bool HasComponent(Entity e) {
-        size_t id = GetComponentID<Tcomponent>();
-        return entityMasks[e].size() > id && entityMasks[e][id];
+    template<typename Tcomp>
+    bool HasComponent(uint16_t e_index){
+        size_t component_index = Generator::TypeID<Tcomp>();
+        assert(entity_masks.size() > e_index);
+        assert(entity_masks[e_index].size() > component_index);
+        return entity_masks[e_index][component_index];
     }
 };
 #endif

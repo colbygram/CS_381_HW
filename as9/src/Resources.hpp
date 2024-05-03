@@ -9,10 +9,12 @@
 #include <optional>
 #include <iostream>
 #include <cassert>
+#include <bitset>
 
 #include "../raylib-cpp/include/raylib-cpp.hpp"
 #include <BufferedInput.hpp>
 
+#include "Generator.hpp"
 #include "DOECS.hpp"
 
 #endif

@@ -124,6 +124,7 @@
     "thread": "cpp",
     "cinttypes": "cpp",
     "typeinfo": "cpp",
-    "ranges": "cpp"
+    "ranges": "cpp",
+    "variant": "cpp"
   }
 }
