@@ -11,10 +11,10 @@
 #include <cassert>
 #include <bitset>
 
-#include "../raylib-cpp/include/raylib-cpp.hpp"
-#include <BufferedInput.hpp>
-
+#include "Globals.hpp"
 #include "Generator.hpp"
 #include "DOECS.hpp"
+#include "Components.hpp"
+#include "System.hpp"
 
 #endif

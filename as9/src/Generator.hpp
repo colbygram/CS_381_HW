@@ -9,7 +9,7 @@
 class Generator {
 private:
     //Used to generate the index associated with the component type
-    static size_t Identifier() {
+    static inline size_t Identifier() {
         static size_t value = 0;
         return value++;
     }
@@ -18,7 +18,7 @@ public:
     //When an instance of the template is created, it takes in the current value of identifier() and stores it as a static local variable, 
     //meaning the value will carry over when the same type is used again.
     template<typename>
-    static size_t TypeID() {
+    static inline size_t TypeID() {
         static const size_t value = Identifier();
         return value;
     }

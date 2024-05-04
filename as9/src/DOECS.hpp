@@ -12,6 +12,7 @@
 #include <variant>
 #include <cassert>
 #include "Generator.hpp"
+#include "Globals.hpp"
 
 /// @brief 
 /// Type erasured storage method for component types. Necessary when components are unknown in advance and the data structures must dynamically adapt
@@ -19,9 +20,6 @@
 /// component_data: a vector of bytes that will be allocated for dynamic
 /// @ref
 /// Basically exact implementation from class. Few changes here and there. Don't know of any other effective type erasure methods beyond this one
-
-#define MAX_ENTITIES 1000
-using Entity = uint16_t;
 
 class ComponentStorage{
 public:
