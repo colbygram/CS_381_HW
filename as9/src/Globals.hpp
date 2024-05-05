@@ -9,6 +9,8 @@
 #define WIDTH 1024
 #define HEIGHT 512
 #define MAX_LEVEL_COLUMNS 48
+#define GRAVITY 2
+#define JUMP_TIME 0.05
 
 typedef uint16_t Entity;
 

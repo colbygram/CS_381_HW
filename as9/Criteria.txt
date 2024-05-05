@@ -1,0 +1,32 @@
+DOECS Implementation: Full marks since the game is built using DOECS
+
+Must be interactable: Full marks. Game is interactable through keyboard and mouse :)
+
+Must Respond to mouse: I don't know the extent of this is required but 
+the main menu requires a mouse click to start game
+
+Must Draw Model or play sound: I had tried to get sound to work with music but 
+it would not work no matter what. It's a 2D game so models can't be rendered.
+I used custom made textures for tiles and drew those to screen, I dont know if 
+that counts or not
+
+Custom made: I would say yes since all the textures except the main menu is custom made
+
+Display Text: Yes game displays text in menu and on start button
+
+Description of criterion: this
+
+Window named AS9: with a few extra words too :)
+
+Minimum two systems not proposed in class: I would say yes. My game contains 5 systems.
+The physics system and move system technically only require the player since I didn't 
+want to apply physics to other entities in the scene, but they still represent 
+systems and physics can easilty be extended to include all entities
+
+Additional systems: don't know if my systems count but I have 5
+
+Read me and pictures: read me explains basis of game, controls and has pictures
+
+Grade Myself: I personally believe it's a 110 considering that it isn't just another
+coppy paste 3D game and I tried to extend it to a dimension we haven't worked in, in 
+this class, containing it's own difficulties.
