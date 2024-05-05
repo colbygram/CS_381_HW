@@ -4,10 +4,13 @@
 ## Objective:
 You are E-7, an advanced cube that is looking to escape a mysterious environment
 ![alt text](<Github/Screenshot 2024-05-04 220203.png>)
+
 Avoid enemy cubes that will reset progress!
 ![alt text](<Github/Screenshot 2024-05-04 220155.png>)
+
 Find the exit and you win!!!
 ![alt text](<Github/Screenshot 2024-05-04 220221.png>)
+
 ## Controls
 Use A and D to go left and right respectively. Use space to jump
 ## Criteria
