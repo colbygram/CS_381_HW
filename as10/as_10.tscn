@@ -1,0 +1,60 @@
+[gd_scene load_steps=4 format=3 uid="uid://4rgxaclsjr3u"]
+
+[ext_resource type="Script" path="res://Count.gd" id="3_i5ymq"]
+
+[sub_resource type="GDScript" id="GDScript_1hbyo"]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_h4kjl"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath("Count:text")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+
+[node name="MainGameUI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1154.0
+offset_bottom = 646.0
+script = SubResource("GDScript_1hbyo")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 1154.0
+offset_bottom = 648.0
+color = Color(0.438071, 0.542848, 0.67166, 1)
+
+[node name="Increment" type="Button" parent="."]
+layout_mode = 0
+offset_left = 684.0
+offset_top = 316.0
+offset_right = 843.0
+offset_bottom = 366.0
+text = "Increment"
+
+[node name="Decrement" type="Button" parent="."]
+layout_mode = 0
+offset_left = 316.0
+offset_top = 316.0
+offset_right = 485.0
+offset_bottom = 366.0
+text = "Decrement"
+
+[node name="Count" type="Label" parent="."]
+layout_mode = 0
+offset_left = 538.0
+offset_top = 311.0
+offset_right = 644.0
+offset_bottom = 377.0
+text = "Count"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("3_i5ymq")
+metadata/Counter = 0
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_h4kjl")
+
+[connection signal="pressed" from="Increment" to="Count" method="Increment"]
+[connection signal="pressed" from="Decrement" to="Count" method="Decrement"]

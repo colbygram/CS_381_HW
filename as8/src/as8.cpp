@@ -133,6 +133,7 @@ struct Physics3D{
 struct TransformC{
     raylib::Vector3 position;
     raylib::Quaternion rotation;
+    raylib::Vector3 euler_angles;
     raylib::Vector3 forward_vector;
 };
 
@@ -141,9 +142,8 @@ struct Render{
     bool selected;
 };
 
-struct Input{
-    //true = plane, false = boat
-    bool input_mode;
+struct Inputs{
+    bool is_plane;
 };
 
 ////////////////////////////////SYSTEMS///////////////////////////////////////////
@@ -171,6 +171,116 @@ void CameraSystem(Scene<ComponentStorage>& scene, Entity e, raylib::Camera3D& ca
     auto& trans = scene.GetComponent<TransformC>(e);
     camera.SetPosition(trans.position + offset); 
     camera.SetTarget(trans.position);
+}
+void BoatSystem(Scene<ComponentStorage>& scene, raylib::BufferedInput& inputs, int current_index, bool& inputs_pressed, float dt){
+    if(!scene.HasComponent<Render>(current_index) || !scene.HasComponent<TransformC>(current_index) || !scene.HasComponent<Physics2D>(current_index) || !scene.HasComponent<Inputs>(current_index)) return;
+    auto& inp = scene.GetComponent<Inputs>(current_index);
+    if(inp.is_plane) return;
+    auto& render = scene.GetComponent<Render>(current_index);
+    if(!render.selected) return;
+    auto& trans = scene.GetComponent<TransformC>(current_index);
+    auto& phys = scene.GetComponent<Physics2D>(current_index);
+    if(!inputs_pressed && inputs["Forward"].data.button.last_state) {
+        phys.speed += phys.acceleration * dt;
+        inputs_pressed = true;
+    }
+    if(!inputs_pressed && inputs["Backward"].data.button.last_state) {
+        phys.speed -= phys.acceleration * dt;
+        inputs_pressed = true;
+    }
+    if(!inputs_pressed && inputs["Left"].data.button.last_state) {
+        phys.turn_yaw--;
+        if(phys.turn_yaw<-1) phys.turn_yaw = 0;
+        inputs_pressed = true;
+    }
+    if(!inputs_pressed && inputs["Right"].data.button.last_state) {
+        phys.turn_yaw++;
+        if(phys.turn_yaw>1) phys.turn_yaw = 0;
+        inputs_pressed = true;
+    }
+    if(!inputs["Forward"].data.button.last_state &&
+       !inputs["Backward"].data.button.last_state &&
+       !inputs["Left"].data.button.last_state &&
+       !inputs["Right"].data.button.last_state){
+        inputs_pressed = false;
+    }
+}
+void PlaneSystem(Scene<ComponentStorage>& scene, raylib::BufferedInput& inputs, int current_index, bool& inputs_pressed, float dt){
+    if(!scene.HasComponent<Render>(current_index) || !scene.HasComponent<TransformC>(current_index) || !scene.HasComponent<Physics3D>(current_index) || !scene.HasComponent<Inputs>(current_index)) return;
+    auto& inp = scene.GetComponent<Inputs>(current_index);
+    if(!inp.is_plane) return;
+    auto& render = scene.GetComponent<Render>(current_index);
+    if(!render.selected) return;
+    auto& trans = scene.GetComponent<TransformC>(current_index);
+    auto& phys = scene.GetComponent<Physics3D>(current_index);
+    if(!inputs_pressed && inputs["Forward"].data.button.last_state) {
+        phys.speed += phys.acceleration * dt;
+        inputs_pressed = true;
+    }
+    if(!inputs_pressed && inputs["Backward"].data.button.last_state) {
+        phys.speed -= phys.acceleration * dt;
+        inputs_pressed = true;
+    }
+    if(!inputs_pressed && inputs["Left"].data.button.last_state) {
+        phys.turn_yaw--;
+        if(phys.turn_yaw<-1) phys.turn_yaw = 0;
+        inputs_pressed = true;
+    }
+    if(!inputs_pressed && inputs["Right"].data.button.last_state) {
+        phys.turn_yaw++;
+        if(phys.turn_yaw>1) phys.turn_yaw = 0;
+        inputs_pressed = true;
+    }
+    if(!inputs_pressed && inputs["Up"].data.button.last_state) {
+        phys.turn_pitch++;
+        if(phys.turn_pitch>1) phys.turn_pitch = 0;
+        inputs_pressed = true;
+    }
+    if(!inputs_pressed && inputs["Down"].data.button.last_state) {
+        phys.turn_pitch--;
+        if(phys.turn_pitch<-1) phys.turn_pitch = 0;
+        inputs_pressed = true;
+    }
+    if(!inputs["Forward"].data.button.last_state &&
+       !inputs["Backward"].data.button.last_state &&
+       !inputs["Left"].data.button.last_state &&
+       !inputs["Right"].data.button.last_state &&
+       !inputs["Up"].data.button.last_state &&
+       !inputs["Down"].data.button.last_state){
+        inputs_pressed = false;
+    }
+}
+raylib::Vector3 CalculateForwardVector(raylib::Vector3 eulers){
+    raylib::Vector3 forward_vector;
+    forward_vector.x = cos(eulers.x) * sin(eulers.y);
+    forward_vector.y = -sin(eulers.x);
+    forward_vector.z = cos(eulers.x) * cos(eulers.y);
+    return forward_vector;
+}
+void Physics2DSystem(Scene<ComponentStorage>& scene, float dt){
+    for(Entity e; e < scene.entityMasks.size(); e++){
+        if(!scene.HasComponent<Physics2D>(e) || !scene.HasComponent<TransformC>(e)) continue;
+        auto& phys = scene.GetComponent<Physics2D>(e);
+        auto& trans = scene.GetComponent<TransformC>(e);
+        trans.euler_angles.y += (phys.turn_yaw * phys.turn_rate * dt);
+        trans.rotation = raylib::Quaternion::FromEuler(trans.euler_angles);
+        trans.forward_vector = CalculateForwardVector(trans.euler_angles);
+        phys.velocity = (trans.forward_vector.Normalize() * phys.speed);
+        trans.position += phys.velocity;
+    }
+}
+void Physics3DSystem(Scene<ComponentStorage>& scene, float dt){
+    for(Entity e; e < scene.entityMasks.size(); e++){
+        if(!scene.HasComponent<Physics3D>(e) || !scene.HasComponent<TransformC>(e)) continue;
+        auto& phys = scene.GetComponent<Physics3D>(e);
+        auto& trans = scene.GetComponent<TransformC>(e);
+        trans.euler_angles.y += (phys.turn_yaw * phys.turn_rate * dt);
+        trans.euler_angles.x += (phys.turn_pitch * phys.turn_rate * dt);
+        trans.rotation = raylib::Quaternion::FromEuler(trans.euler_angles);
+        trans.forward_vector = CalculateForwardVector(trans.euler_angles);
+        phys.velocity = (trans.forward_vector.Normalize() * phys.speed);
+        trans.position += phys.velocity;
+    }
 }
 
 ///////////////////////////Utility////////////////////////
@@ -214,7 +324,7 @@ int main(){
     boat05_model.SetTransform(raylib::Transform(boat05_model.transform).RotateX(raylib::Radian(1.571)).RotateY(PI).Scale(0.01,0.01,0.01));
     
     //Inputs
-    raylib::BufferedInput plane_input, boat_input;
+    raylib::BufferedInput inputs;
 
     //Scene init
     Scene<ComponentStorage> scene;
@@ -224,115 +334,195 @@ int main(){
 
     auto& render0 = scene.AddComponent<Render>(e0); 
     auto& transform0 = scene.AddComponent<TransformC>(e0);
-    scene.AddComponent<Physics3D>(e0);
+    auto& inp0 = scene.AddComponent<Inputs>(e0);
+    inp0.is_plane = true;
+    auto& phys0 = scene.AddComponent<Physics3D>(e0);
     transform0.position = raylib::Vector3(0,50,0);
     render0.model = &plane_model;
     transform0.rotation = raylib::Quaternion::Identity();
+    phys0.acceleration = 20;
+    phys0.max_speed = 5;
+    phys0.speed = 0;
+    phys0.turn_pitch = 0;
+    phys0.turn_yaw = 0;
+    phys0.turn_rate = 0.25;
+    phys0.velocity = raylib::Vector3::Zero();
 
     auto& render1 = scene.AddComponent<Render>(e1); 
     auto& transform1 = scene.AddComponent<TransformC>(e1); 
-    scene.AddComponent<Physics3D>(e1);
+    auto& inp1 = scene.AddComponent<Inputs>(e1);
+    inp1.is_plane = true;
+    auto& phys1 = scene.AddComponent<Physics3D>(e1);
     transform1.position = raylib::Vector3(0,50,-75);
     render1.model = &plane_model;
     transform1.rotation = raylib::Quaternion::Identity();
+    phys1.acceleration = 20;
+    phys1.max_speed = 5;
+    phys1.speed = 0;
+    phys1.turn_pitch = 0;
+    phys1.turn_yaw = 0;
+    phys1.turn_rate = 0.25;
+    phys1.velocity = raylib::Vector3::Zero();
 
     auto& render2 = scene.AddComponent<Render>(e2); 
     auto& transform2 = scene.AddComponent<TransformC>(e2);  
-    scene.AddComponent<Physics3D>(e2);
+    auto& inp2 = scene.AddComponent<Inputs>(e2);
+    inp2.is_plane = true;
+    auto& phys2 = scene.AddComponent<Physics3D>(e2);
     transform2.position = raylib::Vector3(0,50,75);
     render2.model = &plane_model;
     transform2.rotation = raylib::Quaternion::Identity();
+    phys2.acceleration = 20;
+    phys2.max_speed = 5;
+    phys2.speed = 0;
+    phys2.turn_pitch = 0;
+    phys2.turn_yaw = 0;
+    phys2.turn_rate = 0.25;
+    phys2.velocity = raylib::Vector3::Zero();
 
     auto& render3 = scene.AddComponent<Render>(e3); 
     auto& transform3 = scene.AddComponent<TransformC>(e3);  
-    scene.AddComponent<Physics3D>(e3);
+    auto& inp3 = scene.AddComponent<Inputs>(e3);
+    inp3.is_plane = true;
+    auto& phys3 = scene.AddComponent<Physics3D>(e3);
     transform3.position = raylib::Vector3(0,50,-150);
     render3.model = &plane_model;
     transform3.rotation = raylib::Quaternion::Identity();
+    phys3.acceleration = 20;
+    phys3.max_speed = 5;
+    phys3.speed = 0;
+    phys3.turn_pitch = 0;
+    phys3.turn_yaw = 0;
+    phys3.turn_rate = 0.25;
+    phys3.velocity = raylib::Vector3::Zero();
 
     auto& render4 = scene.AddComponent<Render>(e4); 
-    auto& transform4 = scene.AddComponent<TransformC>(e4);  
-    scene.AddComponent<Physics3D>(e4);
+    auto& transform4 = scene.AddComponent<TransformC>(e4); 
+    auto& inp4 = scene.AddComponent<Inputs>(e4);
+    inp4.is_plane = true; 
+    auto& phys4 = scene.AddComponent<Physics3D>(e4);
     transform4.position = raylib::Vector3(0,50,150);
     render4.model = &plane_model;
     transform4.rotation = raylib::Quaternion::Identity();
+    phys4.acceleration = 20;
+    phys4.max_speed = 5;
+    phys4.speed = 0;
+    phys4.turn_pitch = 0;
+    phys4.turn_yaw = 0;
+    phys4.turn_rate = 0.25;
+    phys4.velocity = raylib::Vector3::Zero();
 
     //Boat entities
     Entity e5 = scene.CreateEntity(), e6 = scene.CreateEntity(), e7 = scene.CreateEntity(), e8 = scene.CreateEntity(), e9 = scene.CreateEntity();
 
     auto& render5 = scene.AddComponent<Render>(e5); 
-    auto& transform5 = scene.AddComponent<TransformC>(e5);  
-    scene.AddComponent<Physics2D>(e5);
+    auto& transform5 = scene.AddComponent<TransformC>(e5); 
+    auto& inp5 = scene.AddComponent<Inputs>(e5);
+    inp5.is_plane = false; 
+    auto& phys5 = scene.AddComponent<Physics2D>(e5);
     transform5.position = raylib::Vector3(0,0,0);
     render5.model = &boat01_model;
     transform5.rotation = raylib::Quaternion::Identity();
+    phys5.acceleration = 20;
+    phys5.max_speed = 5;
+    phys5.speed = 0;
+    phys5.turn_yaw = 0;
+    phys5.turn_rate = 0.25;
+    phys5.velocity = raylib::Vector3::Zero();
 
     auto& render6 = scene.AddComponent<Render>(e6); 
     auto& transform6 = scene.AddComponent<TransformC>(e6);  
-    scene.AddComponent<Physics2D>(e6);
+    auto& inp6 = scene.AddComponent<Inputs>(e6);
+    inp6.is_plane = false; 
+    auto& phys6 = scene.AddComponent<Physics2D>(e6);
     transform6.position = raylib::Vector3(0,0,-75);
     render6.model = &boat02_model;
     transform6.rotation = raylib::Quaternion::Identity();
+    phys6.acceleration = 10;
+    phys6.max_speed = 3;
+    phys6.speed = 0;
+    phys6.turn_yaw = 0;
+    phys6.turn_rate = 0.25;
+    phys6.velocity = raylib::Vector3::Zero();
 
     auto& render7 = scene.AddComponent<Render>(e7); 
     auto& transform7 = scene.AddComponent<TransformC>(e7);  
-    scene.AddComponent<Physics2D>(e7);
+    auto& inp7 = scene.AddComponent<Inputs>(e7);
+    inp7.is_plane = false; 
+    auto& phys7 = scene.AddComponent<Physics2D>(e7);
     transform7.position = raylib::Vector3(0,0,75);
     render7.model = &boat03_model;
     transform7.rotation = raylib::Quaternion::Identity();
+    phys7.acceleration = 10;
+    phys7.max_speed = 4;
+    phys7.speed = 0;
+    phys7.turn_yaw = 0;
+    phys7.turn_rate = 0.25;
+    phys7.velocity = raylib::Vector3::Zero();
 
     auto& render8 = scene.AddComponent<Render>(e8); 
-    auto& transform8 = scene.AddComponent<TransformC>(e8);  
-    scene.AddComponent<Physics2D>(e8);
+    auto& transform8 = scene.AddComponent<TransformC>(e8);
+    auto& inp8 = scene.AddComponent<Inputs>(e8);
+    inp8.is_plane = false;   
+    auto& phys8 = scene.AddComponent<Physics2D>(e8);
     transform8.position = raylib::Vector3(0,0,-150);
     render8.model = &boat04_model;
     transform8.rotation = raylib::Quaternion::Identity();
+    phys8.acceleration = 15;
+    phys8.max_speed = 5;
+    phys8.speed = 0;
+    phys8.turn_yaw = 0;
+    phys8.turn_rate = 0.25;
+    phys8.velocity = raylib::Vector3::Zero();
 
     auto& render9 = scene.AddComponent<Render>(e9); 
-    auto& transform9 = scene.AddComponent<TransformC>(e9);  
-    scene.AddComponent<Physics2D>(e9);
+    auto& transform9 = scene.AddComponent<TransformC>(e9); 
+    auto& inp9 = scene.AddComponent<Inputs>(e9);
+    inp9.is_plane = false;  
+    auto& phys9 = scene.AddComponent<Physics2D>(e9);
     transform9.position = raylib::Vector3(0,0,150);
     render9.model = &boat05_model;
     transform9.rotation = raylib::Quaternion::Identity();
+    phys9.acceleration = 20;
+    phys9.max_speed = 5;
+    phys9.speed = 0;
+    phys9.turn_yaw = 0;
+    phys9.turn_rate = 0.25;
+    phys9.velocity = raylib::Vector3::Zero();
 
     Entity entities[10] = {e0,e1,e2,e3,e4,e5,e6,e7,e8,e9};
     int current_index = 0;
 
-    //Boat Inputs
-    //New idea: Make input work :(
-    boat_input["W"] = raylib::Action::key(KEY_W);
-    boat_input["W"].data.button.last_state;
-    boat_input["S"] = raylib::Action::key(KEY_S)
-    .SetPressedCallback([]{
-
-    }).move();
-    boat_input["A"] = raylib::Action::key(KEY_A);
-    boat_input["D"] = raylib::Action::key(KEY_D)
-    .SetPressedCallback([]{
-        
-    }).move();
-    boat_input["SPACE"] = raylib::Action::key(KEY_SPACE)
-    .SetPressedCallback([]{
-
-    }).move();
+    inputs["Forward"] = raylib::Action::key(KEY_W).move();
+    inputs["Backward"] = raylib::Action::key(KEY_S).move();
+    inputs["Left"] = raylib::Action::key(KEY_A).move();
+    inputs["Right"] = raylib::Action::key(KEY_D).move();
+    inputs["Up"] = raylib::Action::key(KEY_UP).move();
+    inputs["Down"] = raylib::Action::key(KEY_DOWN).move();
+    inputs["Reset"] = raylib::Action::key(KEY_SPACE).move();
 
     //Control menu toggle
     bool control_toggle = false;
-    
+    bool inputs_pressed = false;
+
     if(scene.HasComponent<Render>(entities[current_index])) scene.GetComponent<Render>(entities[current_index]).selected = true;
     //Game loop
     while (!window.ShouldClose()) {
-        boat_input.PollEvents();
+        inputs.PollEvents();
         if(IsKeyPressed(KEY_C)) control_toggle = !control_toggle;
         if(IsKeyPressed(KEY_TAB) && scene.HasComponent<Render>(entities[current_index])){
             scene.GetComponent<Render>(entities[current_index]).selected = false;
             current_index = (current_index + 1) % 10;
             scene.GetComponent<Render>(entities[current_index]).selected = true;
         }
-        CameraSystem(scene, entities[current_index], main_camera, camera_offset);
+        BoatSystem(scene, inputs, entities[current_index], inputs_pressed, GetFrameTime());
+        PlaneSystem(scene, inputs, entities[current_index], inputs_pressed, GetFrameTime());
+        Physics2DSystem(scene, GetFrameTime());
+        Physics3DSystem(scene, GetFrameTime());
         //Render
         window.BeginDrawing();
             window.ClearBackground(GRAY);
+            CameraSystem(scene, entities[current_index], main_camera, camera_offset);
             main_camera.BeginMode();
                 water_plane.Draw({});
                 RenderingSystem(scene);

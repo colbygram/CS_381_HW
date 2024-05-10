@@ -1,0 +1,43 @@
+[gd_scene load_steps=3 format=3 uid="uid://h6r6sxyiqgle"]
+
+[ext_resource type="Script" path="res://NetworkUI.gd" id="1_niw14"]
+[ext_resource type="PackedScene" uid="uid://4rgxaclsjr3u" path="res://as_10.tscn" id="2_4bfaw"]
+
+[node name="NetworkUI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1154.0
+offset_bottom = 644.0
+script = ExtResource("1_niw14")
+game_scene = ExtResource("2_4bfaw")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 1156.0
+offset_bottom = 648.0
+color = Color(0.788078, 0.631504, 0.825622, 1)
+
+[node name="HOST" type="Button" parent="."]
+layout_mode = 0
+offset_left = 489.0
+offset_top = 151.0
+offset_right = 684.0
+offset_bottom = 209.0
+action_mode = 0
+text = "HOST"
+
+[node name="JOIN" type="Button" parent="."]
+layout_mode = 0
+offset_left = 489.0
+offset_top = 234.0
+offset_right = 684.0
+offset_bottom = 292.0
+action_mode = 0
+text = "JOIN"
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://as_10.tscn")
+spawn_path = NodePath("..")
+
+[connection signal="pressed" from="HOST" to="." method="Host"]
+[connection signal="pressed" from="JOIN" to="." method="Join"]
